@@ -1,0 +1,6 @@
+bell-start.mp3  → suena al INICIAR cada round (y el tiempo extra)
+bell-end.mp3    → suena al TERMINAR cada round y el combate
+
+Para cambiar un sonido: reemplazá el archivo con el mismo nombre
+y recargá la página (F5). Si un archivo falta, el programa usa
+una campana sintética automáticamente.
