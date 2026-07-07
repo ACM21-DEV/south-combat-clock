@@ -533,7 +533,7 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="fighters.js"></script>
+<script>
 <script>
 /* ── Arranque defensivo ─────────────────────────────────────
    Si fighters.js no cargó (carpeta incompleta, zip sin extraer,
@@ -569,7 +569,11 @@ window.addEventListener("error", function(e){
    el combate activo en `active`.
    ════════════════════════════════════════════════════════════ */
 
+
 const $ = id => document.getElementById(id);
+
+document.addEventListener('DOMContentLoaded', () => {
+
 
 const SILHOUETTE = `<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
   <circle cx="50" cy="32" r="20"/>
@@ -1177,6 +1181,8 @@ if (DATA_MISSING) {
 }
 renderPanel();
 renderClock();
-</script>
+
+});
+</script></script>
 </body>
 </html>
