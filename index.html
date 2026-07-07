@@ -323,19 +323,7 @@
   .muted{color:var(--steel);font-size:13px;line-height:1.5}
   .flexrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
-  .dev-tools{
-    position:fixed;top:6px;left:6px;z-index:80;
-    display:flex;align-items:center;gap:4px;
-    opacity:.25;transition:opacity .2s;
-  }
-  .dev-tools:hover,.dev-tools:focus-within{opacity:1}
-  .dev-tools .dev-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--steel)}
-  .dev-tools button{
-    font-size:10px;padding:3px 8px;border:1px solid var(--line);border-radius:4px;
-    background:var(--surface2);color:var(--steel);letter-spacing:.05em;
-  }
-  .dev-tools button:hover{color:var(--bone);border-color:var(--red)}
-  .new-match-modal{
+.new-match-modal{
     position:fixed;inset:0;background:rgba(8,8,10,.92);z-index:65;
     display:none;align-items:center;justify-content:center;
   }
@@ -471,12 +459,6 @@
       · La duración de cada combate se puede cambiar individualmente en su fila.
     </p>
   </div>
-</div>
-
-<div class="dev-tools" id="devTools" title="Herramientas de prueba">
-  <span class="dev-label">test</span>
-  <button data-jump="12">→ 0:12</button>
-  <button data-jump="3">→ 0:03</button>
 </div>
 
 <div id="flash"></div>
@@ -1177,23 +1159,7 @@ document.addEventListener("keydown", e=>{
   }
 });
 
-/* ---------- herramientas de prueba (esquina superior izquierda) ---------- */
-document.querySelectorAll("#devTools [data-jump]").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    if(!active){ toast("Cargá un combate primero"); return; }
-    if(phase==="done"||phase==="expired"||phase==="betweenRounds"){
-      toast("Este round ya terminó — iniciá el siguiente o reiniciá"); return;
-    }
-    const target = parseFloat(btn.dataset.jump);
-    remaining = target;
-    lastBeepSecond = null;
-    if(phase==="running"||phase==="otRunning"){
-      endTime = performance.now() + target*1000;   // el tick sigue corriendo desde aquí
-    }
-    updateTimerFace();
-    toast("Reloj adelantado a " + fmt(target));
-  });
-});
+/* Test toolbar code removed for stability */
 
 /* Aviso si intentan cerrar con el reloj corriendo */
 window.addEventListener("beforeunload", e=>{
