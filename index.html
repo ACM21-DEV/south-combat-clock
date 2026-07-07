@@ -1145,17 +1145,6 @@ $("btnSound").addEventListener("click", ()=>{
   if(soundOn) beep();
 });
 
-let lightMode = localStorage.getItem("lightMode") === "true";
-function applyTheme(){
-  document.body.classList.toggle("light-mode", lightMode);
-  $("btnLightMode").textContent = lightMode ? "🌙 Dark" : "☀️ Light";
-}
-$("btnLightMode").addEventListener("click", ()=>{
-  lightMode = !lightMode;
-  localStorage.setItem("lightMode", lightMode);
-  applyTheme();
-});
-applyTheme();
 $("btnOtYes").addEventListener("click", acceptOT);
 $("btnOtNo").addEventListener("click", declineOT);
 
