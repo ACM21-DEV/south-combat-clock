@@ -264,6 +264,25 @@
     color:var(--steel);margin-bottom:14px;
   }
 
+  /* Encabezado de disciplina dentro de la cartelera */
+  .disc-head{
+    display:flex;align-items:baseline;gap:12px;
+    padding:16px 8px 8px;margin-top:6px;
+    border-bottom:2px solid var(--red);
+  }
+  .disc-head:first-child{margin-top:0;padding-top:4px}
+  .disc-title{
+    font-family:var(--display);font-size:22px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--bone);
+  }
+  .disc-sub{
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+  }
+  .disc-count{
+    margin-left:auto;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--steel);
+  }
+
   .match-row{
     display:grid;
     grid-template-columns:34px 1fr 44px 1fr 118px 84px 72px 86px 60px auto;
@@ -343,6 +362,18 @@
   .form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
   .form-actions{display:flex;gap:10px;margin-top:20px}
   .form-actions .btn{flex:1}
+  .dev-tools{
+    position:fixed;top:6px;left:6px;z-index:80;
+    display:flex;align-items:center;gap:4px;
+    opacity:.25;transition:opacity .2s;
+  }
+  .dev-tools:hover,.dev-tools:focus-within{opacity:1}
+  .dev-tools .dev-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--steel)}
+  .dev-tools button{
+    font-size:10px;padding:3px 8px;border:1px solid var(--line);border-radius:4px;
+    background:var(--surface2);color:var(--steel);letter-spacing:.05em;
+  }
+  .dev-tools button:hover{color:var(--bone);border-color:var(--red)}
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
     background:var(--surface2);border:1px solid var(--steel);border-radius:8px;
@@ -459,6 +490,12 @@
       · La duración de cada combate se puede cambiar individualmente en su fila.
     </p>
   </div>
+</div>
+
+<div class="dev-tools" id="devTools" title="Herramientas de prueba">
+  <span class="dev-label">test</span>
+  <button data-jump="12">→ 0:12</button>
+  <button data-jump="3">→ 0:03</button>
 </div>
 
 <div id="flash"></div>
@@ -943,9 +980,35 @@ function fighterCellHTML(match, slot){
 }
 function renderPanel(){
   const list = $("matchList");
-  list.innerHTML = card.map((m,i)=>`
+  const groups = [
+    { type:"jj", title:"Jiu-Jitsu", sub:"Reglas EBI · Nogi" },
+    { type:"kb", title:"Kickboxing", sub:"K-1" },
+  ];
+  let html = "";
+  groups.forEach(g=>{
+    const rows = card.filter(m => m.type === g.type);
+    if(!rows.length) return;
+    html += `<div class="disc-head">
+      <span class="disc-title">${g.title}</span>
+      <span class="disc-sub">${g.sub}</span>
+      <span class="disc-count">${rows.length} ${rows.length===1?"combate":"combates"}</span>
+    </div>`;
+    html += rows.map((m,i)=>matchRowHTML(m,i+1)).join("");
+  });
+  // combates de tipo desconocido (por si acaso) van al final
+  const others = card.filter(m => m.type!=="jj" && m.type!=="kb");
+  if(others.length){
+    html += `<div class="disc-head"><span class="disc-title">Otros</span></div>`;
+    html += others.map((m,i)=>matchRowHTML(m,i+1)).join("");
+  }
+  list.innerHTML = html;
+  updateBackup();
+}
+
+function matchRowHTML(m, n){
+  return `
     <div class="match-row ${m.status==="current"?"current":""} ${m.status==="done"?"done":""}" data-id="${m.id}">
-      <div class="num">${i+1}</div>
+      <div class="num">${n}</div>
       ${fighterCellHTML(m,"f1")}
       <div class="vs-mini">VS</div>
       ${fighterCellHTML(m,"f2")}
@@ -976,10 +1039,22 @@ function renderPanel(){
         <button class="icon-btn" data-act="down" data-id="${m.id}" title="Bajar">▼</button>
         <button class="icon-btn" data-act="del" data-id="${m.id}" title="Eliminar">✕</button>
       </div>
-    </div>`).join("");
-  updateBackup();
+    </div>`;
 }
 function byId(id){ return card.find(m => m.id === id); }
+
+/* Mueve un combate arriba/abajo pero solo dentro de su propia
+   disciplina — así no salta de sección al reordenar. */
+function swapWithinType(m, dir){
+  const i = card.indexOf(m);
+  let j = i + dir;
+  while(j >= 0 && j < card.length && card[j].type !== m.type) j += dir;
+  if(j < 0 || j >= card.length) return;          // ya es el primero/último de su sección
+  card[i] = card[j];
+  card[j] = m;
+  renderPanel();
+  updateBackup();
+}
 
 $("matchList").addEventListener("change", e=>{
   const act = e.target.dataset.act;
@@ -1040,8 +1115,8 @@ $("matchList").addEventListener("click", e=>{
     case "load":
       if(!m.f1.name || !m.f2.name){ toast("Faltan nombres en este combate"); return; }
       loadMatch(m); break;
-    case "up":   if(i>0){ card.splice(i,1); card.splice(i-1,0,m); renderPanel(); } break;
-    case "down": if(i<card.length-1){ card.splice(i,1); card.splice(i+1,0,m); renderPanel(); } break;
+    case "up":   swapWithinType(m, -1); break;
+    case "down": swapWithinType(m, +1); break;
     case "del":
       if(confirm(`¿Eliminar ${m.f1.name || "?"} vs ${m.f2.name || "?"}?`)){
         if(active===m){ active=null; phase="idle"; stopTick(); renderClock(); }
@@ -1166,6 +1241,24 @@ document.addEventListener("keydown", e=>{
 /* Test toolbar code removed for stability */
 
 /* Aviso si intentan cerrar con el reloj corriendo */
+/* ---------- herramientas de prueba (esquina superior izquierda) ---------- */
+document.querySelectorAll("#devTools [data-jump]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    if(!active){ toast("Cargá un combate primero"); return; }
+    if(phase==="done"||phase==="expired"||phase==="betweenRounds"){
+      toast("Este round ya terminó — iniciá el siguiente o reiniciá"); return;
+    }
+    const target = parseFloat(btn.dataset.jump);
+    remaining = target;
+    lastBeepSecond = null;
+    if(phase==="running"||phase==="otRunning"){
+      endTime = performance.now() + target*1000;
+    }
+    updateTimerFace();
+    toast("Reloj adelantado a " + fmt(target));
+  });
+});
+
 window.addEventListener("beforeunload", e=>{
   if(phase==="running"||phase==="otRunning"){ e.preventDefault(); e.returnValue=""; }
 });
