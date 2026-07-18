@@ -13,9 +13,9 @@
 
 const GYMS = {
   blackhouse: { name: "Black House Fight Club",  logo: "images/gym-blackhouse.jpg" },
-  cbm:        { name: "CBM Cardio-Box & MMA",    logo: "images/gym-cbm.jpg" },
+  cbm:        { name: "CBM Cardio Box",          logo: "images/gym-cbm.jpg" },
+  checkmat:   { name: "Checkmat Pérez Zeledón",  logo: "images/gym-501.jpg" },
   corncancun: { name: "Corn Cancun Box",         logo: "images/gym-corncancun.jpg" },
-  g501:       { name: "Jiu-Jitsu 501",           logo: "images/gym-501.jpg" },
   jeanlima:   { name: "Jean Lima BJJ",           logo: "images/gym-jeanlima.jpg" },
   macaco:     { name: "Macaco AMM",              logo: "images/gym-macaco.jpg" },
   warriors:   { name: "The Warriors",            logo: "images/gym-warriors.jpg" },
@@ -26,12 +26,12 @@ const FIGHTERS = [
   // --- Grappling (cartelera con foto) ---
   { name: "Mateo Molina",   gym: "cbm",        photo: "images/molina.jpg" },
   { name: "Josué Zúñiga",   gym: "blackhouse", photo: "images/zuniga.jpg" },
-  { name: "Jean Carlo Mena",gym: "blackhouse", photo: "images/mena.jpg" },
-  { name: "Bryan Mora",     gym: "corncancun", photo: "images/mora.jpg" },
+  { name: "Jean Carlo Mena",gym: "blackhouse", photo: "images/mena.png" },
+  { name: "Bryan Mora",     gym: "corncancun", photo: "images/mora.png" },
   { name: "Diego Arroyo",   gym: "blackhouse", photo: "images/arroyo.jpg" },
   { name: "Roy García",     gym: "warriors",   photo: "images/garcia.jpg" },
-  { name: "Larry Olivares", gym: "g501",       photo: "images/olivares.jpg" },
-  { name: "Jadiel Quesada", gym: "jeanlima",   photo: "images/quesada.jpg" },
+  { name: "Larry Olivares", gym: "checkmat",   photo: "images/olivares.jpg" },
+  { name: "Jadiel Quesada", gym: "blackhouse", photo: "images/quesada.jpg" },
 
   // --- Kickboxing (cartelera oficial, sin foto por ahora) ---
   { name: "José Delgado",    gym: "none", photo: null },
@@ -39,7 +39,7 @@ const FIGHTERS = [
   { name: "Axel Marenco",    gym: "none", photo: null },
   { name: "Hanzel Cerdas",   gym: "none", photo: null },
   { name: "Esteban Vargas",  gym: "none", photo: null },
-  { name: "Sebastián Palomo",gym: "none", photo: null },
+  { name: "Heyden Soto",     gym: "none", photo: null },
   { name: "Raúl Jiménez",    gym: "none", photo: null },
   { name: "Mathías Jiménez", gym: "none", photo: null },
   { name: "Andre Mora",      gym: "none", photo: null },
@@ -61,7 +61,7 @@ const MATCHES = [
   // Kickboxing — cartelera oficial WKF
   { type: "kb", f1: "José Delgado",    f2: "Alexis Arias",     label: "Kickboxing 1" },
   { type: "kb", f1: "Axel Marenco",    f2: "Hanzel Cerdas",    label: "Kickboxing 2" },
-  { type: "kb", f1: "Esteban Vargas",  f2: "Sebastián Palomo", label: "Kickboxing 3" },
+  { type: "kb", f1: "Esteban Vargas",  f2: "Heyden Soto",      label: "Kickboxing 3" },
   { type: "kb", f1: "Raúl Jiménez",    f2: "Mathías Jiménez",  label: "Pelea Coestelar" },
   { type: "kb", f1: "Andre Mora",      f2: "Giovanni Hidalgo", label: "Evento Estelar" },
 ];
