@@ -769,7 +769,8 @@ function updateTimerFace(){
   const startBtn = $("btnStart");
   if(phase==="running"||phase==="otRunning"){ startBtn.textContent = "Pausar"; }
   else if(phase==="paused"||phase==="otPaused"){ startBtn.textContent = "Continuar"; }
-  else if(phase==="betweenRounds"){ startBtn.textContent = "Iniciar Round " + (currentRound+1); }
+  else if(phase==="betweenRounds"){ startBtn.textContent = "Preparar Round " + (currentRound+1); }
+  else if(phase==="roundReady"){ startBtn.textContent = "Iniciar Round " + currentRound; }
   else { startBtn.textContent = "Iniciar"; }
   startBtn.disabled = !active || phase==="expired" || phase==="done";
 }
@@ -824,15 +825,19 @@ function loadMatch(match){
 function startPause(){
   if(!active) { toast("Cargá un combate desde la cartelera"); return; }
   ensureAudio(); // desbloquear audio con gesto del usuario
-  if(phase==="ready"||phase==="paused"||phase==="betweenRounds"){
-    if(phase==="betweenRounds"){
-      stopRest();
-      currentRound++;
-      remaining = active.duration;
-      lastBeepSecond = null;
-    }
-    if(phase==="ready"||phase==="betweenRounds") bellStart();  // campana de inicio de round
+  if(phase==="ready"||phase==="paused"||phase==="roundReady"){
+    if(phase==="ready"||phase==="roundReady") bellStart();  // campana de inicio de round
     phase = "running"; startTick(); setBadge("En vivo","live");
+    updateRoundIndicator();
+  } else if(phase==="betweenRounds"){
+    /* Paso intermedio: solo prepara el siguiente round.
+       Corta el descanso y deja el reloj cargado, sin arrancar. */
+    stopRest();
+    currentRound++;
+    remaining = active.duration;
+    lastBeepSecond = null;
+    phase = "roundReady";
+    setBadge("Listo · Round " + currentRound,"");
     updateRoundIndicator();
   } else if(phase==="otReady"){
     bellStart();
